@@ -4,6 +4,8 @@
 
 A single-page app that runs inside a [Cogover](https://cogover.com) Workspace as a **Custom Frontend Module**. It looks like a small desktop: a dock on the left and each app in its own window.
 
+![A quick tour: filtering and arranging the task list, writing a note on a task, creating a task, then Notes, Dev tools, Settings and the dark theme](docs/demo.gif)
+
 | App | What it does |
 | --- | --- |
 | **Công việc** (Tasks) | My tasks: quick filters, deadline / role / priority filters, filter by person, search, status workflow, rich-text description with pasted images, attachments, activity timeline with notes and @mentions, configurable and resizable columns. |

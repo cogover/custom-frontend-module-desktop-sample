@@ -4,6 +4,8 @@
 
 Ứng dụng một trang (SPA) chạy trong Workspace [Cogover](https://cogover.com) dưới dạng **Custom Frontend Module**. Giao diện giống một desktop nhỏ: dock bên trái, mỗi app mở trong một cửa sổ riêng.
 
+![Lướt nhanh: lọc và sắp xếp danh sách việc, viết ghi chú trên một việc, tạo việc mới, rồi Ghi chú, Dev tools, Cài đặt và giao diện tối](docs/demo.gif)
+
 | App | Chức năng |
 | --- | --- |
 | **Công việc** | Việc của tôi: bộ lọc nhanh, lọc theo hạn chót / vai trò / mức ưu tiên, lọc theo người, tìm kiếm, quy trình trạng thái, mô tả rich text có dán ảnh, file đính kèm, dòng hoạt động với ghi chú và @mention, chọn cột và kéo đổi độ rộng cột. |
