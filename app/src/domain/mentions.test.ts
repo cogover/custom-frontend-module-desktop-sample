@@ -1,4 +1,4 @@
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 import { mentionContextForTask, mentionPeopleBody, mentionQueryAt, normalizeCandidates } from './mentions';
 
 describe('mentionQueryAt: the "@…" being typed before the caret', () => {
@@ -55,5 +55,18 @@ describe('people search and mention context', () => {
       recordId: 'TAS1',
       redirect: '/o/task/TAS1?layoutId=LODEMOLAYOUT1&activityId={record_id}',
     });
+  });
+
+  it('uses the Object and the detail layout of the Workspace serving the page (one set per hostname)', async () => {
+    // the IDs are picked when the modules load: load them again as the page of another Workspace
+    vi.resetModules();
+    vi.stubGlobal('location', new URL('https://globex.cogover.example/_cm_5/index.html'));
+    const elsewhere = await import('./mentions');
+    expect(elsewhere.mentionContextForTask('TAS1')).toEqual({
+      objectId: 'OTDEMO2TASK01',
+      recordId: 'TAS1',
+      redirect: '/o/task/TAS1?layoutId=LODEMO2LAYOUT&activityId={record_id}',
+    });
+    vi.resetModules();
   });
 });

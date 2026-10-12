@@ -1,5 +1,5 @@
-// The Workspaces this module runs on (CONTRIBUTING.md "Data rules"): Object and field IDs differ from one Workspace
-// to the other, so the page picks the set of its own host. Nothing here is a secret.
+// The Workspaces this module runs on (CONTRIBUTING.md "Data rules"): Object, field and layout IDs differ from one
+// Workspace to the other, so the page picks the set of its own host. Nothing here is a secret.
 
 export interface WorkspaceIds {
   workspaceId: string;
@@ -16,6 +16,11 @@ export interface WorkspaceIds {
   notes: { folder: string; note: string; tag: string; pin: string };
   /** Object `user_settings` (Cài đặt). */
   settings: string;
+  /**
+   * Detail layout of `task` (`LO…`): part of the link an @mention stores, so the notification opens the task
+   * (CONTRACT §5.3f). It is the `layoutId` parameter in links to a task's detail page.
+   */
+  taskViewLayout: string;
 }
 
 /**
@@ -33,6 +38,7 @@ export const ACME: WorkspaceIds = {
   activityContent: 'OFDEMOACTCONT',
   notes: { folder: 'OTDEMONOTECAT', note: 'OTDEMONOTECON', tag: 'OTDEMONOTETAG', pin: 'OTDEMONOTEPIN' },
   settings: 'OTDEMOSETTING',
+  taskViewLayout: 'LODEMOLAYOUT1',
 };
 
 /** A second example Workspace: the same build serves several Workspaces (CONTRACT.md §11). */
@@ -47,6 +53,7 @@ export const GLOBEX: WorkspaceIds = {
   activityContent: 'OFDEMO2ACTCON',
   notes: { folder: 'OTDEMO2NOTCAT', note: 'OTDEMO2NOTCON', tag: 'OTDEMO2NOTTAG', pin: 'OTDEMO2NOTPIN' },
   settings: 'OTDEMO2SETTIN',
+  taskViewLayout: 'LODEMO2LAYOUT',
 };
 
 const BY_HOST: Record<string, WorkspaceIds> = {

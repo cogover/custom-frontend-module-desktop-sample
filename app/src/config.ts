@@ -79,9 +79,10 @@ export const LOGIN_URL = '/';
 
 /**
  * @mentions in notes (CONTRACT §5.3f): the span Cogover's editor writes points back to the task through its
- * detail layout; the backend notifies the person and marks the span `data-mentioned="true"`.
+ * detail layout; the backend notifies the person and marks the span `data-mentioned="true"`. The layout belongs
+ * to the Workspace serving the page, like every other ID (workspaces.ts).
  */
-export const TASK_VIEW_LAYOUT_ID = 'LODEMOLAYOUT1';
+export const TASK_VIEW_LAYOUT_ID = WS.taskViewLayout;
 /** People shown in the "@" list. */
 export const MENTION_PAGE_SIZE = 8;
 /** Typing pause before the people search runs. */

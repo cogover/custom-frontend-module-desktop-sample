@@ -24,7 +24,7 @@ detailed specification, and code comments refer to its sections.
 
 ## Data rules
 
-- Object, field and Workspace IDs live in `app/src/workspaces.ts` (one set per hostname; a test keeps them out of the other app sources). One exception today: `TASK_VIEW_LAYOUT_ID` in `app/src/config.ts`, a single value for every hostname. The mock backend and the tests repeat the placeholder IDs of the example set.
+- Object, field, layout and Workspace IDs live in `app/src/workspaces.ts` (one set per hostname; a test keeps them out of the other app sources). The mock backend and the tests repeat the placeholder IDs of the example set.
 - The app talks to the Records API with the user's own session (same-origin cookies, CSRF token from the `XSRF-TOKEN` cookie). Never put a key, token or cookie in the source or in `VITE_*` variables.
 - A single-value file field is written as **one** FILE_METADATA object (not an array) and cleared with `null`. Multi-format long text is `{"text_type": n, "value": …}`.
 

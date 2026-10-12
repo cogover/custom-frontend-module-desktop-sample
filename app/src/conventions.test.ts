@@ -16,9 +16,9 @@ describe('conventions (CONTRIBUTING.md)', () => {
     expect(native).toEqual([]);
   });
 
-  it('keeps Object / field / Workspace IDs in workspaces.ts only (one set per Workspace)', () => {
+  it('keeps Object / field / layout / Workspace IDs in workspaces.ts only (one set per Workspace)', () => {
     const hardcoded = Object.entries({ ...sources, ...modules })
-      .filter(([file, src]) => file !== './workspaces.ts' && /['"](OT|OF|WS)[A-Za-z0-9]{10,13}['"]/.test(src))
+      .filter(([file, src]) => file !== './workspaces.ts' && /['"](OT|OF|WS|LO)[A-Za-z0-9]{10,13}['"]/.test(src))
       .map(([file]) => file);
     expect(hardcoded).toEqual([]);
   });

@@ -177,8 +177,9 @@ Most requests use slugs, but writes and uploads need IDs. Put them in `app/src/w
 | `activityContent` | field ID of `activity.content` |
 | `notes.folder`, `notes.note`, `notes.tag`, `notes.pin` | Object IDs of `notes_cat`, `notes_content`, `notes_tag`, `notes_pin` |
 | `settings` | Object ID of `user_settings` |
+| `taskViewLayout` | ID of the detail layout of `task` (`LO…`) |
 
-One more Workspace-specific value lives in `app/src/config.ts`: `TASK_VIEW_LAYOUT_ID`, the ID of the detail layout of `task`. It is part of the link stored in an @mention so the notification opens the task.
+`taskViewLayout` is part of the link stored in an @mention, so the notification opens the task.
 
 Object and field IDs are shown in the Object settings of your Workspace; the Objects API (`POST /bapi/v1/objects/list` with `includeFields: true`, authenticated with a Workspace API key) returns them too, along with the Workspace ID. The layout ID is the `layoutId` parameter in links to a task's detail page.
 
