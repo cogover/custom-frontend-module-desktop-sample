@@ -2,7 +2,7 @@ import { test, expect } from '../../support/local/fixtures';
 
 /**
  * AC46 / CONTRACT mục 12: app "Dev tools" trên dock (`dock-app-dev-tools`, `?app=devtools`), bốn công cụ chạy hoàn toàn
- * trong trình duyệt (không gọi API): JSON (định dạng + màu, báo dòng/cột lỗi), Markdown (xem trước an toàn),
+ * trong trình duyệt (không gọi API): JSON (định dạng + màu, báo dòng/cột lỗi), Markdown (xem trước an toàn, không tải gì),
  * JWT (giải mã, kiểm chữ ký bằng secret, tạo token), Base64 (mã hoá / giải mã UTF-8, URL-safe, đổi chiều).
  */
 
@@ -38,18 +38,36 @@ test.describe('AC46 Dev tools', () => {
     expect(mock.violations).toEqual([]);
   });
 
-  test('AC46 Markdown xem trước (bảng, code, không chạy script); JWT giải mã + kiểm chữ ký + tạo token; Base64 mã hoá ⇄ giải mã', async ({ app, page }) => {
+  test('AC46 Markdown xem trước (bảng, code, không chạy script, không tải ảnh / video theo URL); JWT giải mã + kiểm chữ ký + tạo token; Base64 mã hoá ⇄ giải mã', async ({ app, page }) => {
     await app.open('');
     await page.goto(page.url().replace(/[?#].*$/, '') + '?app=devtools');
     await expect(page.getByTestId('devtools-app')).toBeVisible();
 
     await page.getByTestId('devtools-nav-markdown').click();
-    await page.getByTestId('markdown-input').fill('# Tiêu đề\n\n**đậm** <img src=x onerror="window.__md=1">\n\n| a | b |\n| - | - |\n| 1 | 2 |\n\n```js\nlet x = 1\n```');
+    // bản xem trước không tải gì (mục 12): ảnh / video theo URL thành dòng chữ, chỉ ảnh nhúng data: được hiện
+    const loads: string[] = [];
+    page.on('request', (r) => {
+      if (r.url().includes('khong-tai')) loads.push(r.url());
+    });
+    await page.getByTestId('markdown-input').fill(
+      '# Tiêu đề\n\n**đậm** <img src="data:image/png;base64,AAAA" onerror="window.__md=1">\n\n' +
+        '![Sơ đồ](https://tracker.test/khong-tai.png)\n\n<img src=khong-tai-x onerror="window.__md=2">\n\n' +
+        '<video src="https://tracker.test/khong-tai.mp4" poster="/khong-tai-poster.png" autoplay></video>\n\n' +
+        '<table background="/khong-tai-nen.png"><tr><td>ô</td></tr></table>\n\n' +
+        '| a | b |\n| - | - |\n| 1 | 2 |\n\n```js\nlet x = 1\n```',
+    );
     const md = page.getByTestId('markdown-output');
     await expect(md.locator('h1')).toHaveText('Tiêu đề');
-    await expect(md.locator('table td')).toHaveCount(2);
+    await expect(md.locator('table td')).toHaveCount(3);
     await expect(md.locator('pre code')).toContainText('let x = 1');
+    await expect(md.locator('[data-blocked="img"]').first()).toHaveText('Ảnh không tải “Sơ đồ”: https://tracker.test/khong-tai.png');
+    await expect(md.locator('[data-blocked="img"]').nth(1)).toHaveText('Ảnh không tải: khong-tai-x');
+    await expect(md.locator('[data-blocked="video"]')).toHaveText('Video không tải: https://tracker.test/khong-tai.mp4');
+    await expect(md.locator('img'), 'chỉ còn ảnh nhúng data:').toHaveCount(1);
+    await expect(md.locator('video')).toHaveCount(0);
+    await page.waitForTimeout(300); // cho trình duyệt kịp gửi request nếu còn thứ gì tải được
     expect(await page.evaluate(() => (window as any).__md), 'không chạy mã trong Markdown').toBeUndefined();
+    expect(loads, 'bản xem trước Markdown không tải ảnh / video / ảnh nền').toEqual([]);
 
     await page.getByTestId('devtools-nav-jwt').click();
     await page.getByTestId('jwt-sample').click();

@@ -42,6 +42,7 @@
 .dt-wrap{white-space:pre-wrap;overflow-wrap:anywhere}
 .dt-auto{flex:none;overflow:visible}
 .dt-preview{padding:16px 20px;background:var(--surface)}
+.dt-preview [data-blocked]{display:inline-block;max-width:100%;padding:2px 8px;border:1px dashed var(--line-strong);border-radius:var(--radius);background:var(--surface-2);color:var(--ink-3);overflow-wrap:anywhere}
 .dt-empty{padding:14px;background:var(--surface-2);color:var(--ink-3)}
 .dt-error{padding:14px;border-color:var(--red);background:var(--red-soft);color:var(--ink)}
 .dt-error p{margin:0;overflow-wrap:anywhere}

@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react';
-import { sanitizeDescription } from '../domain/sanitize';
+import { sanitizeDescription, sanitizeOffline } from '../domain/sanitize';
 import { markdownToHtml } from '../notes/markdown';
 import { CopyButton, Pane, ToolButton, type ToolProps } from './parts';
 import '../notes/notes.css'; // the `.prose` reading styles of the notes
@@ -27,7 +27,10 @@ Bản **v20** có _ba_ thay đổi chính:
 /** Markdown on the left; the readable page on the right (GitHub-flavoured: tables, code, task lists). */
 export function MarkdownTool({ notify }: ToolProps) {
   const [text, setText] = useState('');
-  const html = useMemo(() => (text.trim() ? sanitizeDescription(markdownToHtml(text)) : ''), [text]);
+  const raw = useMemo(() => (text.trim() ? markdownToHtml(text) : ''), [text]);
+  // what "Sao chép HTML" hands over keeps the addresses of pictures; what is shown here downloads nothing (CONTRACT §12)
+  const html = useMemo(() => sanitizeDescription(raw), [raw]);
+  const preview = useMemo(() => sanitizeOffline(raw), [raw]);
   return (
     <div className="dt-split">
       <Pane
@@ -55,8 +58,8 @@ export function MarkdownTool({ notify }: ToolProps) {
       </Pane>
       <Pane title="Xem trước" actions={<CopyButton text={html} notify={notify} testId="markdown-copy" label="Sao chép HTML" />}>
         {html ? (
-          // sanitised (DOMPurify): no scripts, event handlers or inline styles
-          <div className="dt-preview v-html prose" data-testid="markdown-output" tabIndex={0} dangerouslySetInnerHTML={{ __html: html }} />
+          // sanitised (DOMPurify): no scripts, event handlers or inline styles, and nothing to download
+          <div className="dt-preview v-html prose" data-testid="markdown-output" tabIndex={0} dangerouslySetInnerHTML={{ __html: preview }} />
         ) : (
           <p className="dt-empty">Bản xem trước hiện ở đây khi bạn viết Markdown bên trái.</p>
         )}

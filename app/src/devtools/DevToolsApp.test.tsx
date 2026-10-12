@@ -52,6 +52,24 @@ describe('Dev tools window', () => {
     expect(screen.getByTestId('devtools-title')).toHaveTextContent('Base64 decoder / encoder');
   });
 
+  it('previews Markdown without downloading anything; "Sao chép HTML" still hands over the full HTML', async () => {
+    const user = userEvent.setup();
+    const writeText = vi.fn().mockResolvedValue(undefined);
+    Object.defineProperty(navigator, 'clipboard', { value: { writeText }, configurable: true });
+    render(<DevToolsApp />);
+    await user.click(screen.getByTestId('devtools-nav-markdown'));
+    const pixel = 'data:image/png;base64,iVBORw0KGgo=';
+    type('markdown-input', `![Sơ đồ](https://tracker.test/so-do.png)\n\n![](${pixel})\n\n<video src="https://tracker.test/v.mp4"></video>`);
+    const md = screen.getByTestId('markdown-output');
+    expect(Array.from(md.querySelectorAll('img')).map(img => img.getAttribute('src'))).toEqual([pixel]); // only the embedded picture
+    expect(md.querySelector('[data-blocked="img"]')).toHaveTextContent('Ảnh không tải “Sơ đồ”: https://tracker.test/so-do.png');
+    expect(md.querySelector('[data-blocked="video"]')).toHaveTextContent('Video không tải: https://tracker.test/v.mp4');
+    expect(md.querySelector('video')).toBeNull();
+    await user.click(screen.getByTestId('markdown-copy'));
+    expect(writeText).toHaveBeenCalledTimes(1);
+    expect(writeText.mock.calls[0][0]).toContain('<img src="https://tracker.test/so-do.png" alt="Sơ đồ"');
+  });
+
   it('hides and shows its left rail like the other windows; hidden: the tools are tabs in the title bar', async () => {
     // desktop width (the rail only folds away on ≥ 881px)
     vi.spyOn(window, 'matchMedia').mockImplementation(
