@@ -595,8 +595,25 @@ export default function RichTextEditor(props: RichTextEditorProps) {
   const autoFocus = useRef(props.autoFocus);
   useEffect(() => {
     ready.current({ getValue: () => editor.children }, editor.children);
-    if (autoFocus.current) editor.tf.focus({ edge: 'endEditor' }); // 'end' does nothing without a selection yet
-    return () => detach.current?.(editor.children);
+    let focusTimer = 0;
+    if (autoFocus.current) {
+      // caret at the end of the document, then focus in a task of our own. Not `tf.focus({ edge })`: with the
+      // selection just changed, Slate retries the focus on a timer, and when the document changes again before it
+      // fires (typing at once, a slow machine) that retry throws where nothing can catch it.
+      const end = editor.api.end([]);
+      if (end) editor.tf.select(end);
+      focusTimer = window.setTimeout(() => {
+        try {
+          editor.tf.focus();
+        } catch {
+          // the document moved on before the first paint: whoever changed it is already in the editor
+        }
+      }, 0);
+    }
+    return () => {
+      window.clearTimeout(focusTimer);
+      detach.current?.(editor.children);
+    };
   }, [editor]);
   useEffect(() => {
     if (!canUpload) return;
