@@ -1,0 +1,22 @@
+{
+  "name": "cong-viec-e2e",
+  "private": true,
+  "version": "0.1.0",
+  "description": "End-to-end tests (Playwright, mocked API) for the Công việc app.",
+  "license": "MIT",
+  "author": "Cogover LLC",
+  "type": "module",
+  "scripts": {
+    "test:e2e:local": "playwright test --project=local",
+    "typecheck": "tsc --noEmit",
+    "list": "playwright test --list"
+  },
+  "engines": {
+    "node": ">=22.22"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.63.0",
+    "@types/node": "^26.6.3",
+    "typescript": "^7.0.2"
+  }
+}

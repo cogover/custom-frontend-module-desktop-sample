@@ -1,0 +1,18 @@
+/* "Cài đặt" window (CONTRACT §10): same stylesheet rules as Công việc (nothing moves, no blur effects) */
+.settings-logo{background:linear-gradient(180deg,#A9B2BE 0%,#5F6875 100%);color:#fff;box-shadow:inset 0 0 0 .5px rgba(0,0,0,.12)}
+.settings-title{margin:0;line-height:36px}
+.settings-pane{display:grid;justify-items:start;gap:14px;max-width:680px;padding:24px 28px 32px}
+.settings-lead{margin:0;color:var(--ink-2)}
+
+/* preview: the picture as the desktop shows it (cover, 16:9), its file name, the drop target */
+.wp-preview{position:relative;width:100%;max-width:560px;aspect-ratio:16/9;border:1px solid var(--line);border-radius:var(--radius);background-color:var(--ground);background-position:center;background-size:cover;background-repeat:no-repeat;box-shadow:var(--shadow-sm)}
+.wp-preview[data-drag]{outline:2px dashed var(--accent);outline-offset:3px}
+.wp-name{position:absolute;left:10px;bottom:10px;max-width:calc(100% - 20px);padding:3px 8px;border-radius:var(--radius);background:rgba(17,24,39,.62);color:#fff;font-size:var(--fs);font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.wp-busy{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;gap:8px;border-radius:var(--radius);background:rgba(17,24,39,.45);color:#fff;font-weight:500}
+.wp-actions{display:flex;flex-wrap:wrap;gap:8px}
+.wp-actions .btn-primary,.wp-actions .btn-ghost{height:38px}
+.wp-reset{display:inline-flex;align-items:center;gap:6px}
+.wp-reset:disabled{opacity:.5;cursor:not-allowed}
+@media (max-width:880px){
+  .settings-pane{padding:18px}
+}

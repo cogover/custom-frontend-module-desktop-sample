@@ -1,0 +1,210 @@
+/* "Ghi chú" (CONTRACT §9): only what styles.css of Công việc does not already give — same tokens, the same
+   window frame (.page / .board / .side / .content / .topbar / .scroller), the same rules (no motion, no blur). */
+
+.notes-logo{background:linear-gradient(180deg,#FFD15C 0%,#F5A524 100%);color:#fff;box-shadow:inset 0 0 0 .5px rgba(0,0,0,.12)}
+.notes-side{--side-gap:22px;gap:var(--side-gap)}
+.notes-side .side-head{display:flex;align-items:center;gap:6px;min-height:26px;margin-bottom:6px;padding-right:2px}
+.notes-side .side-head .side-label{margin:0}
+.notes-side .side-tools{margin-left:auto;display:flex;gap:2px}
+.notes-side .side-foot{margin-top:auto;padding:0 12px;font-size:var(--fs);color:var(--ink-3)}
+
+/* folder → sub-folder → … → note, with a guide line under each open folder's chevron */
+.notes-side .tree,.notes-side .tree ul,.notes-pins ul,.notes-shared ul{list-style:none;margin:0;padding:0}
+.notes-side .tree ul{position:relative}
+.notes-side .tree ul::before{content:"";position:absolute;top:0;bottom:6px;left:calc(6px + var(--lvl)*16px + 7px);width:1px;background:var(--line)}
+.notes-side .tree li{outline:none}
+.notes-side .row{position:relative;display:flex;align-items:flex-start;gap:6px;width:100%;min-height:32px;padding:6px 8px 6px calc(6px + var(--lvl,0)*16px);border:0;border-radius:var(--radius);background:none;color:var(--ink-2);font-size:var(--fs);line-height:20px;text-align:left;cursor:pointer;user-select:none}
+.notes-side .row.note{padding-left:calc(6px + var(--lvl,0)*16px + 20px)}
+.notes-side .row svg{flex:none;margin-top:2px;color:var(--ink-3)}
+.notes-side .row .chev{margin-top:3px}
+.notes-side [aria-expanded="true"]>.row .chev{transform:rotate(90deg)}
+.notes-side .row.folder{font-weight:500;color:var(--ink)}
+.notes-side .row.folder .ico{color:var(--ink-2)}
+/* long names wrap, at most 3 lines, then "…" */
+.notes-side .row .name{flex:1;min-width:0;display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:3;line-clamp:3;overflow:hidden;overflow-wrap:anywhere}
+.notes-side .row .cnt{flex:none;min-width:20px;text-align:right;font-size:var(--fs);font-weight:500;color:var(--ink-3);font-variant-numeric:tabular-nums}
+.notes-side .row .pin svg{margin-top:4px}
+.notes-side .row:hover{background:var(--side-active);color:var(--ink)}
+.notes-side [aria-selected="true"]>.row,.notes-side .shared-note[aria-current]{background:var(--side-active);color:var(--ink);font-weight:600}
+.notes-side [aria-selected="true"]>.row svg,.notes-side .shared-note[aria-current] svg{color:var(--accent)}
+.notes-side li:focus-visible>.row{outline:2px solid var(--accent);outline-offset:-2px}
+.tree-more{flex:none;width:22px;height:22px;margin:-1px -4px -1px 0;display:grid;place-items:center;border:0;border-radius:var(--radius);background:none;color:var(--ink-3);cursor:pointer;opacity:0}
+.notes-side .row:hover .tree-more,.tree-more[data-state="open"],.notes-side li:focus-within>.row .tree-more{opacity:1}
+.tree-more:hover{background:var(--surface);color:var(--ink)}
+@media (hover:none){.tree-more{opacity:1}}
+.tree-hint{padding:4px 8px 6px calc(6px + var(--lvl)*16px + 20px);font-size:var(--fs);line-height:20px;color:var(--ink-3)}
+.name-input{flex:1;min-width:0;height:24px;margin:-2px 0;padding:0 6px;border:1px solid var(--accent);border-radius:var(--radius);background:var(--surface);color:var(--ink);font:500 var(--fs)/20px var(--font);outline:none;box-shadow:0 0 0 3px var(--accent-soft)}
+/* drag and drop in the tree (CONTRACT §9.3): the row dragged dims, the folder (or the "Thư mục" header) that takes
+   the drop turns blue; the header shows a drop zone for the top level while dragging */
+.notes-side[data-dragging]{cursor:grabbing}
+.notes-side .row[data-dragging]{opacity:.45}
+.notes-side .row[data-drop-target="ok"],.tree-root-drop[data-drop-target="ok"]{background:var(--accent-soft);box-shadow:inset 0 0 0 1px var(--accent);color:var(--ink)}
+.notes-side .side-head{position:relative}
+.tree-root-drop{position:absolute;inset:-4px 0;z-index:2;display:flex;align-items:center;padding:0 12px;border:1px dashed var(--line-strong);border-radius:var(--radius);background:var(--surface);color:var(--ink-2);font-size:var(--fs)}
+.drag-ghost{position:fixed;z-index:80;pointer-events:none;display:flex;align-items:center;gap:6px;max-width:280px;padding:5px 10px;border:1px solid var(--line);border-radius:var(--radius);background:var(--surface);color:var(--ink);box-shadow:var(--shadow-pop);font-size:var(--fs);font-weight:500;white-space:nowrap}
+.drag-ghost span{overflow:hidden;text-overflow:ellipsis}
+.drag-ghost:not([data-ok]){color:var(--ink-3)}
+.tree-empty{padding:4px 12px;font-size:var(--fs);color:var(--ink-3)}
+.notes-pins ul{display:flex;flex-direction:column;gap:2px}
+.notes-side .qf.pin-item{width:100%;height:auto;min-height:38px;align-items:flex-start;padding-top:8px;padding-bottom:8px;line-height:1.5;white-space:normal}
+.notes-side .pin-item svg{margin-top:2.5px}
+.notes-side .pin-item .label{min-width:0;display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:3;line-clamp:3;overflow:hidden;overflow-wrap:anywhere;text-align:left}
+.notes-side .pin-item[aria-current]{background:var(--side-active);color:var(--ink);font-weight:600}
+.notes-side .pin-item[aria-current] svg{color:var(--accent)}
+.shared-group+.shared-group{margin-top:10px}
+.shared-owner{display:flex;align-items:center;gap:8px;margin:4px 0 2px;padding:0 12px;font-size:var(--fs);font-weight:600;color:var(--ink-2)}
+.shared-owner .avatar{width:20px;height:20px;font-size:10px}
+.notes-app mark{background:#FFE58A;color:inherit;border-radius:2px;padding:0 1px}
+:root[data-theme="dark"] .notes-app mark{background:rgba(255,214,10,.32)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .notes-app mark{background:rgba(255,214,10,.32)}}
+
+/* folder menu (⋯ on a folder row) */
+.menu-pop{z-index:45;min-width:220px;padding:4px;background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow-pop)}
+.menu-item{display:flex;align-items:center;gap:8px;height:34px;padding:0 10px;border-radius:var(--radius);font-size:var(--fs);color:var(--ink);cursor:pointer;outline:none;user-select:none}
+.menu-item[data-highlighted]{background:var(--side-active)}
+.menu-item.menu-danger{color:var(--red)}
+.menu-sep{height:1px;margin:4px 0;background:var(--line)}
+
+/* the note page; "Trên trang này" sits beside the note when it is on and there is room */
+.notes-back{display:none}
+.notes-scroller .empty{margin:28px}
+.notes-empty-icon{background:#FFF3D1;color:#C98A0B}
+.doc{display:grid;grid-template-columns:minmax(0,1040px);justify-content:center;gap:48px;padding:30px 40px 72px}
+.doc-main{min-width:0}
+.toc-toggle{display:none}
+.toc{position:sticky;top:30px;align-self:start;font-size:var(--fs)}
+.toc-title{margin-bottom:10px;font-size:var(--fs);font-weight:500;letter-spacing:.05em;text-transform:uppercase;color:var(--ink-3)}
+.toc ul{list-style:none;margin:0;padding:0}
+.toc button{display:block;width:100%;padding:5px 10px;border:0;border-left:2px solid var(--line);background:none;color:var(--ink-2);font-size:var(--fs);line-height:1.4;text-align:left;cursor:pointer}
+.toc button:hover{color:var(--ink)}
+.toc button[data-level="3"]{padding-left:22px}
+.toc button[aria-current]{border-left-color:var(--accent);color:var(--accent);font-weight:500}
+@container (min-width:960px){
+  .toc-toggle{display:contents}
+  .doc[data-toc]{grid-template-columns:minmax(0,1040px) 200px}
+}
+@container (max-width:959px){.doc .toc{display:none}}
+.crumbs{display:flex;flex-wrap:wrap;align-items:center;gap:2px;margin:0 0 10px -4px;font-size:var(--fs);color:var(--ink-3)}
+.crumb-part{display:inline-flex;align-items:center;gap:2px}
+.crumb{padding:2px 4px;border:0;border-radius:var(--radius);background:none;color:var(--ink-2);font-size:var(--fs);cursor:pointer}
+.crumb:hover{background:var(--surface-2);color:var(--ink)}
+.crumb-text{padding:2px 4px}
+.doc-head{display:flex;align-items:flex-start;gap:16px}
+.doc-head h1{flex:1;min-width:0;margin:0;font-size:var(--fs-h);line-height:1.25;font-weight:650;letter-spacing:-.02em;overflow-wrap:anywhere}
+.doc-actions{flex:none;display:flex;flex-wrap:wrap;justify-content:flex-end;gap:2px;margin:-2px -8px 0 0}
+/* pinned, table of contents shown, note shared or public: the button turns blue */
+.doc-actions .icon-btn[aria-pressed="true"],.doc-actions .icon-btn[data-on]{color:var(--accent)}
+.doc-meta{display:flex;flex-wrap:wrap;align-items:center;gap:6px 18px;margin-top:14px;font-size:var(--fs);color:var(--ink-2)}
+.doc-meta .m{display:inline-flex;align-items:center;gap:6px}
+.doc-meta svg{color:var(--ink-3)}
+.doc-meta .vis[data-visibility="shared"],.doc-meta .vis[data-visibility="shared"] svg{color:var(--accent)}
+.doc-meta .vis[data-visibility="public"],.doc-meta .vis[data-visibility="public"] svg{color:var(--green)}
+.doc-meta .fmt{color:var(--ink-3)}
+.notes-app .tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:14px}
+.notes-app .tag{height:24px;padding:0 8px;display:inline-flex;align-items:center;gap:4px;border:1px solid var(--line);border-radius:var(--radius);background:var(--surface-2);color:var(--ink-2);font-size:var(--fs);font-weight:500}
+.doc-rule{height:1px;margin:22px 0 26px;border:0;background:var(--line)}
+.v-html.prose{font-size:var(--fs);line-height:1.7}
+.v-html.prose>:first-child{margin-top:0}
+.v-html.prose p{margin:0 0 14px}
+.v-html.prose h1,.v-html.prose h2,.v-html.prose h3{scroll-margin-top:24px;letter-spacing:-.01em}
+.v-html.prose h1{margin:34px 0 12px;font-size:var(--fs-h);line-height:1.3}
+.v-html.prose h2{margin:30px 0 10px;font-size:var(--fs-h);line-height:1.35}
+.v-html.prose h3{margin:24px 0 8px;font-size:var(--fs);line-height:1.4}
+.v-html.prose ul,.v-html.prose ol{margin:0 0 14px;padding-left:22px}
+.v-html.prose li{margin:4px 0}
+.v-html.prose pre{margin:0 0 16px;padding:14px 16px;border:1px solid var(--line);white-space:pre;overflow:auto;line-height:1.6}
+.v-html.prose code{border:1px solid var(--line)}
+.v-html.prose pre code{border:0}
+.v-html.prose table{display:table;width:100%;margin:0 0 16px;font-size:var(--fs)}
+.v-html.prose th{background:var(--surface-2);color:var(--ink-2);font-weight:600}
+.v-html.prose th,.v-html.prose td{padding:8px 12px}
+.v-html.prose blockquote{margin:0 0 16px;padding:2px 0 2px 16px}
+.v-html.prose input[type="checkbox"]{margin:0 6px 0 0;vertical-align:-2px}
+
+/* editor */
+/* the form fills the pane: the content field takes the height left, down to 24px above the window's bottom edge,
+   and a long note scrolls inside it (the pane scrolls only when the window is too short) */
+.note-editor{height:100%;max-width:1440px;margin:0 auto;padding:26px 40px 24px;display:flex;flex-direction:column;gap:18px}
+.editor-head{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.editor-head h2{margin:0;font-size:var(--fs-h);font-weight:600;letter-spacing:-.01em}
+.editor-actions{display:flex;gap:8px}
+.input.editor-title{height:48px;font-size:var(--fs);font-weight:600}
+/* folder · format · tags on one row (wrapping only when the window is too narrow for the three) */
+.editor-row{display:flex;flex-wrap:wrap;align-items:flex-start;gap:16px}
+.editor-row>.field{flex:1 1 180px;min-width:0}
+.editor-row>.field-tags{flex:1.4 1 220px}
+.editor-row .tag-picker{min-height:44px}
+/* "Thư mục mới" from the folder list of the editor */
+/* "Tạo thư mục mới…", the last entry of the folder select */
+[data-slot=select-item].folder-new-item,[data-slot=select-item].folder-new-item svg{color:var(--accent)}
+.sheet.folder-sheet{max-width:460px}
+.folder-sheet form{display:grid;gap:16px}
+.folder-fields{display:grid;gap:14px}
+.editor-label-row{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.editor-label-row label{font-size:var(--fs);font-weight:500;color:var(--ink-2)}
+.editor-label-row .link-btn{display:inline-flex;align-items:center;gap:4px;font-size:var(--fs)}
+.input.notes-text{flex:1;height:auto;min-height:0;padding:12px 14px;line-height:1.6;resize:none;overflow-y:auto}
+.input.notes-text.md{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:var(--fs)}
+.md-preview{flex:1;min-height:0;overflow-y:auto;padding:14px 16px;border:1px solid var(--line);border-radius:var(--radius)}
+/* content field: fills the form (min 240px), or with "Phóng to" the whole note pane (above the top bar too) */
+.note-body{flex:1;min-height:240px;display:flex;flex-direction:column}
+.note-body>.field-grow{min-height:0}
+.note-body[data-expanded]{position:absolute;inset:0;z-index:6;gap:12px;padding:18px 28px 24px;background:var(--surface)}
+.note-body-head{flex:none;display:flex;align-items:center;gap:12px}
+.note-body-title{flex:1;min-width:0;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.note-body-head .btn-primary{height:36px}
+.editor-label-actions{display:inline-flex;align-items:center;gap:14px}
+.link-btn.note-expand{display:inline-flex;align-items:center;gap:4px}
+.tag-picker{display:flex;flex-wrap:wrap;align-items:center;gap:6px}
+.tag-chip button{display:grid;place-items:center;width:16px;height:16px;margin-right:-4px;padding:0;border:0;border-radius:50%;background:none;color:var(--ink-3);cursor:pointer}
+.tag-chip button:hover{background:var(--line);color:var(--ink)}
+.tag-add{display:inline-flex;align-items:center;gap:4px;height:24px;padding:0 8px;border:1px dashed var(--line-strong);border-radius:var(--radius);background:none;color:var(--ink-2);font-size:var(--fs);cursor:pointer}
+.tag-add:hover{border-color:var(--ink-3);color:var(--ink)}
+[data-slot="command-item"] .avatar{width:22px;height:22px;font-size:10px}
+
+/* share dialog */
+.sheet.share-sheet{max-width:560px;height:auto;max-height:100%}
+.share-body{gap:18px}
+.vis-group{display:grid;gap:8px}
+.vis-option{position:relative;display:flex;align-items:center;gap:12px;padding:12px 14px;border:1px solid var(--line);border-radius:var(--radius);cursor:pointer}
+/* the options are labels in a .field: `.field>label` (no padding, label weight) must not reach them */
+.field>.vis-option{padding:12px 16px;font-weight:400;color:var(--ink)}
+.vis-option[data-checked]{border-color:var(--accent);background:var(--accent-soft)}
+.vis-option input{position:absolute;inset:0;margin:0;opacity:0;cursor:pointer}
+/* focus ring for the keyboard only (a click already shows the blue border) */
+.vis-option:has(input:focus-visible){outline:2px solid var(--accent);outline-offset:2px}
+/* the icon alone (no box), centred on the option's height */
+.vis-icon{flex:none;width:24px;height:24px;display:grid;place-items:center;color:var(--ink-3)}
+.vis-option[data-checked] .vis-icon{color:var(--accent)}
+.vis-text{display:grid;gap:2px}
+.vis-label{font-size:var(--fs);font-weight:600}
+.vis-hint{font-size:var(--fs);color:var(--ink-2)}
+.share-people[data-disabled] .share-list,.share-people[data-disabled] .share-none{opacity:.55}
+.share-people-head{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.btn-ghost.share-add{height:34px;display:inline-flex;align-items:center;gap:6px;padding:0 12px;font-size:var(--fs)}
+.share-list{list-style:none;margin:0;padding:0;display:grid}
+.share-list li{display:flex;align-items:center;gap:10px;min-height:46px;border-bottom:1px solid var(--line)}
+.share-list .avatar{width:28px;height:28px}
+.dept-icon{flex:none;width:28px;height:28px;display:grid;place-items:center;border-radius:50%;background:var(--surface-2);color:var(--ink-2)}
+.share-list .who{flex:1;min-width:0;font-size:var(--fs);font-weight:500;overflow-wrap:anywhere}
+.share-list .who small{color:var(--ink-3);font-weight:400}
+.share-role{flex:none;color:var(--ink-2)}
+.share-none{padding:6px 0}
+.btn-ghost.share-copy{margin-right:auto;display:inline-flex;align-items:center;gap:6px}
+
+/* tablets and phones: one pane at a time — the rail, or the note with a back button */
+@media (max-width:880px){
+  .notes-board[data-pane="tree"] .notes-content{display:none}
+  .notes-board[data-pane="note"] .notes-side{display:none}
+  .notes-back{display:grid;margin-left:-8px}
+  .notes-side{border-bottom:0}
+  .notes-side .side-label{display:block}
+}
+@container (max-width:640px){
+  .doc{padding:22px 18px 56px}
+  .doc-head{flex-direction:column;gap:8px}
+  .doc-head h1{font-size:var(--fs-h)}
+  .doc-actions{margin:0 0 0 -8px;justify-content:flex-start}
+  .note-editor{padding:20px 18px 48px}
+  .note-body{min-height:420px} /* the page scrolls on phones: a tall enough field */
+}

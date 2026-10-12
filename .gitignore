@@ -1,0 +1,22 @@
+# macOS
+.DS_Store
+
+# dependencies, build and test output (app/ and e2e/ add their own rules)
+node_modules/
+dist/
+coverage/
+test-results/
+playwright-report/
+blob-report/
+*.tsbuildinfo
+*.zip
+
+# your own project file (copy app/cogover.example.json)
+app/cogover.json
+
+# credentials and sessions — never commit
+.env
+.env.*
+.auth/
+*.storageState.json
+.cogover-session*

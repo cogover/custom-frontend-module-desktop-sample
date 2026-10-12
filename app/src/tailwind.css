@@ -1,0 +1,83 @@
+/*
+ * Tailwind v4 for the shadcn/ui inputs only: theme + utilities, WITHOUT the global preflight, so the
+ * CSS ported from the approved design (styles.css, unlayered) keeps priority everywhere else.
+ */
+@layer theme, base, components, utilities;
+@import 'tailwindcss/theme.css' layer(theme);
+@import 'tailwindcss/utilities.css' layer(utilities);
+
+/* dark = [data-theme="dark"], or the system preference while no light theme is forced (same as the tokens) */
+@custom-variant dark {
+  &:where([data-theme='dark'], [data-theme='dark'] *) {
+    @slot;
+  }
+  @media (prefers-color-scheme: dark) {
+    &:where(:root:not([data-theme='light']), :root:not([data-theme='light']) *) {
+      @slot;
+    }
+  }
+}
+
+/* shadcn theme variables → the design tokens (which already switch between light and dark) */
+@theme inline {
+  --font-sans: var(--font);
+  /* one text size for every app (styles.css --fs, CONTRACT §5 "Cỡ chữ") */
+  --text-xs: var(--fs);
+  --text-sm: var(--fs);
+  --text-base: var(--fs);
+  --color-background: var(--surface);
+  --color-foreground: var(--ink);
+  --color-card: var(--surface);
+  --color-card-foreground: var(--ink);
+  --color-popover: var(--surface);
+  --color-popover-foreground: var(--ink);
+  --color-primary: var(--accent);
+  --color-primary-foreground: var(--on-accent);
+  --color-secondary: var(--surface-2);
+  --color-secondary-foreground: var(--ink);
+  --color-muted: var(--surface-2);
+  --color-muted-foreground: var(--ink-3);
+  --color-accent: var(--side-active);
+  --color-accent-foreground: var(--ink);
+  --color-destructive: var(--red);
+  --color-border: var(--line);
+  --color-input: var(--line);
+  --color-ring: var(--accent);
+  --radius-xs: var(--radius);
+  --radius-sm: var(--radius);
+  --radius-md: var(--radius);
+  --radius-lg: var(--radius);
+  --radius-xl: var(--radius);
+  --shadow-xs: none;
+  --shadow-md: var(--shadow-pop);
+}
+
+/* a minimal reset scoped to shadcn parts ([data-slot]) instead of Tailwind's global preflight */
+@layer base {
+  :where([data-slot]),
+  :where([data-slot]) * {
+    border-width: 0;
+    border-style: solid;
+    border-color: var(--color-border);
+  }
+  :where(button[data-slot]),
+  :where([data-slot] button) {
+    margin: 0;
+    padding: 0;
+    background: none;
+    font: inherit;
+    color: inherit;
+    cursor: pointer;
+  }
+  :where(input[data-slot], textarea[data-slot], [data-slot] input) {
+    margin: 0;
+    font: inherit;
+    color: inherit;
+  }
+  :where([data-slot] table) {
+    border-collapse: collapse;
+  }
+  :where([data-slot] th) {
+    font-weight: inherit;
+  }
+}

@@ -1,0 +1,73 @@
+/* "Dev tools" window: same stylesheet rules as the other apps (tokens, one font size, nothing moves) */
+.devtools-logo{background:linear-gradient(180deg,#5B6B82 0%,#1F2937 100%);color:#fff;box-shadow:inset 0 0 0 .5px rgba(0,0,0,.12)}
+.devtools-title{margin:0;line-height:36px}
+/* rail hidden: the four tools as tabs at the right of the title bar */
+.dt-tabs{display:flex;flex-wrap:wrap;gap:4px;margin-left:auto}
+.dt-tab{display:inline-flex;align-items:center;gap:6px;height:32px;padding:0 10px;border:0;border-radius:var(--radius);background:none;color:var(--ink-2);font-size:var(--fs);font-weight:500;cursor:pointer}
+.dt-tab:hover{background:var(--surface-2);color:var(--ink)}
+.dt-tab[aria-pressed="true"]{background:var(--accent-soft);color:var(--accent)}
+/* syntax colours of the JSON view (light / dark) */
+.devtools-app{--j-key:#1D4ED8;--j-str:#0F7B4B;--j-num:#B45309;--j-bool:#7C3AED;--j-null:#6B7280;--j-punc:var(--ink-3)}
+:root[data-theme="dark"] .devtools-app{--j-key:#8AB4FF;--j-str:#6FD3A0;--j-num:#F2B766;--j-bool:#C4A5FF;--j-null:#9AA3B2}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]) .devtools-app{--j-key:#8AB4FF;--j-str:#6FD3A0;--j-num:#F2B766;--j-bool:#C4A5FF;--j-null:#9AA3B2}
+}
+.j-key{color:var(--j-key)}
+.j-str{color:var(--j-str)}
+.j-num{color:var(--j-num)}
+.j-bool{color:var(--j-bool)}
+.j-null{color:var(--j-null)}
+.j-punc{color:var(--j-punc)}
+
+/* a tool fills the window: an optional bar, then the two halves side by side */
+.dt-tool{display:flex;flex-direction:column;gap:12px;padding:16px 28px 24px}
+.dt-tool[hidden],.dt-mode[hidden]{display:none}
+.dt-mode{flex:1;min-height:0;display:flex;flex-direction:column}
+.dt-bar{display:flex;flex-wrap:wrap;align-items:center;gap:10px}
+.dt-seg{min-width:200px}
+.dt-check{flex:none}
+.dt-split{flex:1;min-height:0;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:16px}
+.dt-pane{display:grid;grid-template-rows:auto minmax(0,1fr);gap:8px;min-width:0;min-height:0}
+.dt-pane-head{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:8px;min-height:32px}
+.dt-pane-title{margin:0;font-size:var(--fs);font-weight:600;color:var(--ink-2)}
+.dt-actions{display:flex;flex-wrap:wrap;align-items:center;gap:6px}
+.dt-btn{display:inline-flex;align-items:center;gap:6px;height:32px;padding:0 10px}
+.dt-btn:disabled{opacity:.5;cursor:default}
+.dt-select{width:auto;min-width:170px;height:32px}
+.dt-input,.dt-code,.dt-preview,.dt-empty,.dt-error{min-height:0;margin:0;border:1px solid var(--line);border-radius:var(--radius);overflow:auto}
+.dt-input,.dt-code{padding:12px 14px;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:var(--fs);line-height:1.6;tab-size:2}
+.dt-input{width:100%;height:100%;resize:none;background:var(--surface);color:var(--ink);white-space:pre}
+.dt-input:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft);outline:none}
+.dt-code{background:var(--surface-2);color:var(--ink);white-space:pre}
+.dt-wrap{white-space:pre-wrap;overflow-wrap:anywhere}
+.dt-auto{flex:none;overflow:visible}
+.dt-preview{padding:16px 20px;background:var(--surface)}
+.dt-empty{padding:14px;background:var(--surface-2);color:var(--ink-3)}
+.dt-error{padding:14px;border-color:var(--red);background:var(--red-soft);color:var(--ink)}
+.dt-error p{margin:0;overflow-wrap:anywhere}
+.dt-error-title{font-weight:600;color:var(--red)}
+.dt-stack{display:flex;flex-direction:column;gap:10px;min-height:0}
+.dt-stack>.dt-input{flex:1}
+.dt-scroll{overflow:auto}
+.dt-row{display:flex;flex-wrap:wrap;align-items:flex-end;gap:10px}
+.dt-grow{flex:1;min-width:180px}
+.dt-field{display:grid;gap:4px;color:var(--ink-2)}
+.dt-secret{height:36px;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+.dt-sub{margin:4px 0 0;font-size:var(--fs);font-weight:600;color:var(--ink-2)}
+.dt-badges{display:flex;flex-wrap:wrap;gap:6px}
+.dt-badge{padding:3px 9px;border:1px solid var(--line);border-radius:var(--radius);background:var(--surface-2);color:var(--ink-2);font-weight:500}
+.dt-badge[data-tone="ok"]{border-color:var(--green);color:var(--green)}
+.dt-badge[data-tone="bad"]{border-color:var(--red);color:var(--red)}
+.dt-times{list-style:none;margin:0;padding:0;display:grid;gap:4px}
+/* desktop: the tool takes the height of the window; each half scrolls on its own */
+@media (min-width:881px){
+  .devtools-content .scroller{display:flex;flex-direction:column;overflow:hidden}
+  .dt-tool{flex:1;min-height:0}
+}
+/* phones and narrow windows: the halves stack, each tall enough to work in */
+@media (max-width:880px){
+  .dt-tool{padding:14px 18px 18px}
+  .dt-split{grid-template-columns:minmax(0,1fr)}
+  .dt-pane{grid-template-rows:auto minmax(220px,auto)}
+  .dt-input{min-height:220px}
+}
