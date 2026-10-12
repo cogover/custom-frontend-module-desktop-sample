@@ -54,7 +54,8 @@ describe('@mentions in a note (CONTRACT §5.3f)', () => {
     fireEvent.keyDown(box, { key: 'Enter' });
     await waitFor(() => expect(screen.queryByTestId('mention-list')).toBeNull());
     expect(box).not.toHaveAttribute('aria-expanded');
-    expect(box.querySelector('.rte-mention')).toHaveTextContent('@Nguyễn Thị Lan');
+    // the pill is painted by the editor a moment after the list closes (seen failing on a busy machine)
+    await waitFor(() => expect(box.querySelector('.rte-mention')).toHaveTextContent('@Nguyễn Thị Lan'));
     expect(editor.children[0]).toMatchObject({ type: 'p', children: [{ text: 'Nhờ ' }, { type: 'mention', personId: 'PERMOCK00002' }, { text: ' ' }] });
     type('xem giúp');
     await user.click(screen.getByTestId('activity-submit'));
@@ -67,8 +68,9 @@ describe('@mentions in a note (CONTRACT §5.3f)', () => {
         `data-type="autocomplete" style="${MENTION_STYLE}">@Nguyễn Thị Lan</span> xem giúp</p>`,
     );
     // shown in the timeline as a pill (marker kept, inline style dropped)
-    const pill = screen.getAllByTestId('activity-item')[0].querySelector('[data-autocomplete-type="mention"]')!;
-    expect(pill).toHaveTextContent('@Nguyễn Thị Lan');
+    const pillOf = () => screen.getAllByTestId('activity-item')[0].querySelector('[data-autocomplete-type="mention"]');
+    await waitFor(() => expect(pillOf()).toHaveTextContent('@Nguyễn Thị Lan'));
+    const pill = pillOf()!;
     expect(pill).not.toHaveAttribute('style');
   });
 
@@ -97,7 +99,7 @@ describe('@mentions in a note (CONTRACT §5.3f)', () => {
     await user.click(options()[0]);
     await waitFor(() => expect(screen.queryByTestId('mention-list')).toBeNull());
     expect(editor.api.string([])).toContain('abc ');
-    expect(box.querySelector('.rte-mention')).toHaveTextContent('@Ngô Khánh Vy');
+    await waitFor(() => expect(box.querySelector('.rte-mention')).toHaveTextContent('@Ngô Khánh Vy'));
     // Enter without a list is a new line again
     fireEvent.keyDown(box, { key: 'Enter' });
   });
